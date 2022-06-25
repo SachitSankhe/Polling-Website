@@ -1,9 +1,11 @@
+from django.urls import reverse
 from multiprocessing import context
+from random import choices
 from django.template import loader
 from django.shortcuts import get_object_or_404, render
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 
-from .models import Question
+from .models import Question, Choices
 # Create your views here.
 
 
@@ -36,8 +38,17 @@ def detail(request, question_id):
 
 
 def results(request, question_id):
-    response = "You're looking at results of question %s."
-    return HttpResponse(response % question_id)
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/results.html', {'question': question})
 
 def votes(request,question_id):
-    return HttpResponse("You're voting on question %s." %question_id)
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choices_set.get(pk=request.POST['choice'])
+    except(KeyError, Choices.DoesNotExist):
+        #Redisplaying the quesion voting form
+        return render(request, 'polls/details.html', {'question': question, 'error_message': "You didnt select a choice"})
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+    return HttpResponseRedirect(reverse('polls:results', args=(question_id,)))

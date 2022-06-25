@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1>{{question.question_text}}</h1>
+    <!-- <h1>{{question.question_text}}</h1>
     <h3>Some Choices:-</h3>
     <ul>
         {% for choices in question.choices_set.all %}
@@ -17,7 +17,24 @@
             {{choices.choice_text}}
         </li>
         {% endfor %}
-    </ul>
+    </ul> -->
+    <form action="{% url 'polls:votes' question.id %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend>
+                <h1>{{question.question_text}}</h1>
+            </legend>
+            {% if error_message %}
+            <p><strong>{{error_message}}</strong></p>
+            {% endif %}
+            {% for choices in question.choices_set.all %}
+            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{choices.id}}">
+            <label for="choice{{ forloop.counter }}">{{choices.choice_text}}</label>
+            <br>
+            {% endfor %}
+        </fieldset>
+        <input type="submit" value="vote">
+    </form>
 </body>
 
 </html>
