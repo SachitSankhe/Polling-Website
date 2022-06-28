@@ -1,5 +1,4 @@
 from django.urls import reverse
-from multiprocessing import context
 from django.template import loader
 from django.shortcuts import get_object_or_404, render
 from django.http import Http404, HttpResponse, HttpResponseRedirect
@@ -49,7 +48,7 @@ class DetailView(generic.DetailView):
 
     #Using Generic View
     model = Question
-    template_name = 'polls/detail.html'
+    template_name = 'polls/details.html'
 
 
 class ResultsView(generic.DetailView):
@@ -70,4 +69,4 @@ def votes(request,question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-    return HttpResponseRedirect(reverse('polls:results', args=(question_id,)))
+    return HttpResponseRedirect(reverse('results', args=(question_id,)))

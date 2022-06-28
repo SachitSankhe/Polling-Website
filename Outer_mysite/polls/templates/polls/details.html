@@ -18,7 +18,7 @@
         </li>
         {% endfor %}
     </ul> -->
-    <form action="{% url 'polls:votes' question.id %}" method="post">
+    <form action="{% url 'votes' question.id %}" method="post">
         {% csrf_token %}
         <fieldset>
             <legend>
